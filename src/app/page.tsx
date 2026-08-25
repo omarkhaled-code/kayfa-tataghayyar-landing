@@ -5,7 +5,6 @@ import { ProblemSolution } from '@/components/ProblemSolution';
 import { Stages } from '@/components/Stages';
 import { WhoFor } from '@/components/WhoFor';
 import { FreeChapterReader } from '@/components/FreeChapterReader';
-import { Testimonials } from '@/components/Testimonials';
 import { Pricing } from '@/components/Pricing';
 import { CouponBox } from '@/components/CouponBox';
 import { FAQ } from '@/components/FAQ';
@@ -23,7 +22,6 @@ export default function Home() {
       <Stages />
       <WhoFor />
       <FreeChapterReader />
-      <Testimonials />
       <Pricing />
       <CouponBox />
       <FAQ />
