@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --navy: #12212e;
+  --navy-light: #1d3a4a;
+  --gold: #b07d1a;
+  --gold-light: #e8c079;
+  --ivory: #fdfbf7;
+  --ink: #20313d;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--ivory);
+  color: var(--ink);
+  font-family: var(--font-almarai), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* العناوين والأزرار بخط Tajawal (نفس خط اسم الكتاب على الغلاف) */
+h1,
+h2,
+h3,
+.font-display,
+button {
+  font-family: var(--font-tajawal), system-ui, sans-serif;
+}
+
+/* مسافة أمان أسفل الصفحة عشان الـ CTA الثابت على الموبايل ما يغطيش المحتوى */
+@media (max-width: 767px) {
+  body {
+    padding-bottom: 76px;
+  }
+}
+
+/* شريط تمرير أنيق للقارئ والشات */
+.thin-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.thin-scroll::-webkit-scrollbar-thumb {
+  background: rgba(18, 33, 46, 0.25);
+  border-radius: 9999px;
+}
+
+/* نص محتوى الفصل — تباعد أسطر مريح للقراءة العربية */
+.chapter-prose p {
+  line-height: 2;
+  margin-bottom: 1.15rem;
+}
