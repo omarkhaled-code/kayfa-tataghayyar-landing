@@ -1,6 +1,6 @@
 # صفحة هبوط — كتاب «كيف تتغيّر للأفضل» (عمر خالد)
 
-صفحة هبوط Mobile-first لبيع كتاب إلكتروني، مبنية على **Next.js (App Router) + TypeScript + Tailwind CSS**، مع دعم كامل للعربية (RTL)، تكامل دفع **Kashier**، تتبّع **Meta Pixel**، وشات مساعد مجاني بـ **Groq** (أو Gemini).
+صفحة هبوط Mobile-first لبيع كتاب إلكتروني، مبنية على **Next.js (App Router) + TypeScript + Tailwind CSS**، مع دعم كامل للعربية (RTL)، تكامل دفع **Paymob**، تتبّع **Meta Pixel**، وشات مساعد مجاني بـ **Groq** (أو Gemini).
 
 ---
 
@@ -41,10 +41,11 @@ npm run dev
 | `GROQ_API_KEY` | الشات المساعد المجاني ✅ | **مجاني** من console.groq.com/keys (بيشتغل عالميًا) |
 | `GROQ_MODEL` | موديل الشات (اختياري) | افتراضي `llama-3.3-70b-versatile` |
 | `GEMINI_API_KEY` | بديل للشات (اختياري) | ⚠️ طبقته المجانية مش متاحة في كل الدول |
-| `KASHIER_MERCHANT_ID` | معرّف التاجر (MID) | Kashier Dashboard (جنب اسمك) |
-| `KASHIER_SECRET_KEY` | توقيع رابط الدفع (hash) | Kashier > Integrate now > Payment API Keys |
-| `KASHIER_API_KEY` | التحقق من الـ webhook | نفس المكان (Payment API Key) |
-| `KASHIER_MODE` | test أو live | test افتراضيًا |
+| `PAYMOB_API_KEY` | مصادقة Paymob | Paymob > Settings > Account Info |
+| `PAYMOB_CARD_INTEGRATION_ID` | تكامل الكارت | Paymob > Developers > Payment Integrations |
+| `PAYMOB_WALLET_INTEGRATION_ID` | تكامل المحفظة | نفس المكان |
+| `PAYMOB_IFRAME_ID` | صفحة الدفع | Paymob > Developers > iFrames |
+| `PAYMOB_HMAC_SECRET` | التحقق من الـ webhook | Paymob > Settings > Account Info |
 | `NEXT_PUBLIC_PRICE_EGP` | السعر الحالي | 49 |
 | `NEXT_PUBLIC_ORIGINAL_PRICE_EGP` | السعر المشطوب | 99 |
 | `NEXT_PUBLIC_SITE_URL` | رابط الموقع | مثلاً https://yourdomain.com |
@@ -52,19 +53,20 @@ npm run dev
 
 ---
 
-## 💳 إعداد Kashier (خطوة بخطوة)
+## 💳 إعداد Paymob (خطوة بخطوة)
 
-1. من لوحة تحكم Kashier، افتح **Integrate now > Payment API Keys** وخُد **Merchant ID** و**Secret Key** و**Payment API Key**.
-2. ظبط روابط الرجوع في إعدادات الحساب/الـ webhook:
-   - **Redirect URL** (المستخدم بيرجع هنا بعد الدفع):
+1. سجّل حساب واعمل **Payment Integrations** للكارت والمحفظة، وخُد الـ Integration IDs.
+2. اعمل **iFrame** وخُد الـ iFrame ID.
+3. في إعدادات كل Integration، ظبط روابط الرجوع (Transaction response callbacks):
+   - **Redirect / Response URL** (المستخدم بيرجع هنا):
      `https://yourdomain.com/success`
-   - **Webhook URL** (تأكيد سيرفر لسيرفر):
-     `https://yourdomain.com/api/kashier/webhook`
-3. حطّ القيم التلاتة في `.env.local`، وابدأ بـ `KASHIER_MODE=test` للتجربة قبل ما تحوّل لـ `live`.
+   - **Processed / Webhook URL** (تأكيد سيرفر لسيرفر):
+     `https://yourdomain.com/api/paymob/webhook`
+4. خُد الـ **HMAC secret** وحطّه في `.env.local`.
 
-**تدفّق الدفع في الكود:** المستخدم يضغط شراء → `POST /api/kashier/initiate` (بيحسب توقيع الـ hash محليًا ويرجّع رابط صفحة الدفع المُستضافة من Kashier مباشرة، من غير أي نداء API) → تحويل لصفحة Kashier → بعد الدفع يرجع لـ `/success?paymentStatus=SUCCESS`، و Kashier يبعت تأكيد موثّق بالتوقيع لـ `/api/kashier/webhook`.
+**تدفّق الدفع في الكود:** المستخدم يضغط شراء → `POST /api/paymob/initiate` (auth → order → payment key → iframe URL) → تحويل لصفحة Paymob → بعد الدفع يرجع لـ `/success`، و Paymob يبعت تأكيد موثّق بالـ HMAC لـ `/api/paymob/webhook`.
 
-> **ملاحظة:** زرّي "كارت" و"محفظة" بيبعتوا `allowedMethods=card` أو `allowedMethods=wallet` لصفحة Kashier — القيم دي أفضل تقدير من التوثيق العام، تأكد منها في الـ sandbox أو مع فريق Kashier قبل الإطلاق (عدّلها في `src/app/api/kashier/initiate/route.ts` لو مختلفة).
+> **المحفظة:** الكود بيستخدم نفس الـ iframe للكارت والمحفظة (الـ iframe بيعرض الطريقة حسب الـ integration). لو عايز تدفّق محفظة مباشر بدون iframe (بجمع رقم الموبايل) عدّل `src/app/api/paymob/initiate/route.ts` لاستخدام `/acceptance/payments/pay`.
 
 ---
 
@@ -80,9 +82,9 @@ npm run dev
 للتشديد قبل الإطلاق (موصى به):
 1. أضف **قاعدة بيانات** (مثلاً Supabase/Postgres): خزّن الطلب الناجح من الـ webhook.
 2. أضف **خدمة إيميل** (Resend/SendGrid): ابعت رابط تحميل خاص لكل عميل بعد نجاح الـ webhook.
-3. اربط عرض الرابط في `/success` بتأكيد فعلي من قاعدة البيانات بدل الاعتماد على `?paymentStatus=SUCCESS` (لأنها قابلة للتلاعب من المستخدم).
+3. اربط عرض الرابط في `/success` بتأكيد فعلي من قاعدة البيانات بدل الاعتماد على `?success=true` (لأنها قابلة للتلاعب من المستخدم).
 
-الأماكن المعلّمة بـ `TODO` في `src/app/api/kashier/webhook/route.ts` هي نقطة البداية.
+الأماكن المعلّمة بـ `TODO` في `src/app/api/paymob/webhook/route.ts` هي نقطة البداية.
 
 ---
 
@@ -120,7 +122,7 @@ npm run dev
 انشر على **Vercel** (الأنسب لـ Next.js):
 1. ارفع الكود على GitHub.
 2. اربطه بـ Vercel، وحط نفس متغيرات `.env.local` في Environment Variables.
-3. حدّث `NEXT_PUBLIC_SITE_URL` وروابط Kashier (success + webhook) بالدومين الحقيقي، وحوّل `KASHIER_MODE` لـ `live`.
+3. حدّث `NEXT_PUBLIC_SITE_URL` وروابط Paymob (success + webhook) بالدومين الحقيقي.
 
 ```bash
 npm run build   # للتأكد إن كل حاجة تمام قبل النشر
@@ -139,9 +141,9 @@ src/
 │   ├── success/page.tsx      # صفحة بعد الدفع
 │   └── api/
 │       ├── chat/route.ts             # شات Groq/Gemini المجاني (نطاق الكتاب فقط)
-│       └── kashier/
-│           ├── initiate/route.ts     # بدء الدفع (يحسب رابط صفحة الدفع محليًا)
-│           └── webhook/route.ts       # تأكيد الدفع (توقيع HMAC)
+│       └── paymob/
+│           ├── initiate/route.ts     # بدء الدفع
+│           └── webhook/route.ts       # تأكيد الدفع (HMAC)
 ├── components/               # الأقسام والعناصر (Hero, Pricing, ChatWidget…)
 └── lib/
     ├── book-data.ts          # مصدر معلومات الكتاب

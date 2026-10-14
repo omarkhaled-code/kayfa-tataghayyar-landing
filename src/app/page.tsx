@@ -5,8 +5,8 @@ import { ProblemSolution } from '@/components/ProblemSolution';
 import { Stages } from '@/components/Stages';
 import { WhoFor } from '@/components/WhoFor';
 import { FreeChapterReader } from '@/components/FreeChapterReader';
+import { AboutAuthor } from '@/components/AboutAuthor';
 import { Pricing } from '@/components/Pricing';
-import { CouponBox } from '@/components/CouponBox';
 import { FAQ } from '@/components/FAQ';
 import { Footer } from '@/components/Footer';
 import { StickyCTA } from '@/components/StickyCTA';
@@ -23,7 +23,7 @@ export default function Home() {
       <WhoFor />
       <FreeChapterReader />
       <Pricing />
-      <CouponBox />
+      <AboutAuthor />
       <FAQ />
       <Footer />
 

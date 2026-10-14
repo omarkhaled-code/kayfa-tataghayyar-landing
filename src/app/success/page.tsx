@@ -8,17 +8,16 @@ export const metadata = {
   robots: { index: false, follow: false },
 };
 
-// صفحة بعد رجوع المستخدم من Kashier.
-// Kashier بيضيف ?paymentStatus=SUCCESS/FAILED للرابط. ملاحظة: قيمة
-// paymentStatus من الـ query غير موثّقة تشفيريًا — التأكيد الآمن يتم عبر
-// الـ webhook. للسكافولد ده كافٍ، وللتشديد راجع README (اربط عرض الرابط
-// بتأكيد الـ webhook + قاعدة بيانات).
+// صفحة بعد رجوع المستخدم من Paymob.
+// Paymob بيضيف ?success=true/false للرابط. ملاحظة: قيمة success من الـ query
+// غير موثّقة تشفيريًا — التأكيد الآمن يتم عبر الـ webhook. للسكافولد ده كافٍ،
+// وللتشديد راجع README (اربط عرض الرابط بتأكيد الـ webhook + قاعدة بيانات).
 export default function SuccessPage({
   searchParams,
 }: {
-  searchParams: { paymentStatus?: string };
+  searchParams: { success?: string };
 }) {
-  const paid = searchParams.paymentStatus === 'SUCCESS';
+  const paid = searchParams.success === 'true';
   const base = process.env.BOOK_DOWNLOAD_URL || '/api/download';
   // لو التحميل داخلي (endpoint بتاعنا) نرفق توكن موقّع؛ لو رابط خارجي نسيبه زي ما هو.
   const downloadUrl =

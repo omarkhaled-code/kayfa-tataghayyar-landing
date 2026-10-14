@@ -8,6 +8,7 @@ export function CouponBox() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
+  const [open, setOpen] = useState(false);
 
   async function redeem() {
     const c = code.trim();
@@ -42,33 +43,37 @@ export function CouponBox() {
   }
 
   return (
-    <section className="bg-white py-12">
-      <div className="mx-auto max-w-md px-5 text-center">
-        <h3 className="mb-1 text-lg font-bold text-navy">معاك كوبون هدية؟ 🎁</h3>
-        <p className="mb-4 text-sm text-ink/60">
-          اكتب الكوبون وحمّل الكتاب على طول.
-        </p>
-
-        {done ? (
-          <div className="rounded-xl border border-stage-self/30 bg-stage-self/5 p-4 text-stage-self">
-            ✅ تمام! التحميل بدأ. لو ماشتغلش،{' '}
-            <button
-              onClick={redeem}
-              className="font-bold underline"
-              type="button"
-            >
-              اضغط هنا
-            </button>
-            .
-          </div>
-        ) : (
+    <div className="mt-6 text-center">
+      {!open && !done ? (
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="text-sm font-bold text-navy/70 underline decoration-dotted underline-offset-4 transition hover:text-navy"
+        >
+          🎁 معاك كوبون هدية؟
+        </button>
+      ) : done ? (
+        <div className="rounded-xl border border-stage-self/30 bg-stage-self/5 p-4 text-stage-self">
+          ✅ تمام! التحميل بدأ. لو ماشتغلش،{' '}
+          <button onClick={redeem} className="font-bold underline" type="button">
+            اضغط هنا
+          </button>
+          .
+        </div>
+      ) : (
+        <div>
+          <p className="mb-3 text-sm text-ink/60">
+            اكتب الكوبون وحمّل الكتاب على طول.
+          </p>
           <div className="flex flex-col gap-2 sm:flex-row">
             <input
               value={code}
               onChange={(e) => setCode(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && redeem()}
               placeholder="اكتب كود الكوبون"
-              className="flex-1 rounded-xl border border-navy/20 bg-ivory px-4 py-3 text-center outline-none focus:border-gold"
+              aria-label="كود الكوبون"
+              autoFocus
+              className="flex-1 rounded-xl border border-navy/20 bg-white px-4 py-3 text-center outline-none focus:border-gold"
             />
             <button
               onClick={redeem}
@@ -78,10 +83,9 @@ export function CouponBox() {
               {loading ? '...' : 'فعّل الكوبون'}
             </button>
           </div>
-        )}
-
-        {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
-      </div>
-    </section>
+          {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+        </div>
+      )}
+    </div>
   );
 }

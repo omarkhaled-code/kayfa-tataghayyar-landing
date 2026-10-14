@@ -12,7 +12,7 @@ interface BuyButtonProps {
   children: React.ReactNode;
 }
 
-// يبدأ عملية دفع Kashier: يطلب من الـ API رابط صفحة الدفع، ثم يحوّل المستخدم.
+// يبدأ عملية دفع Paymob: يطلب من الـ API إنشاء طلب + مفتاح دفع، ثم يحوّل المستخدم.
 export function BuyButton({
   method = 'card',
   className = '',
@@ -33,7 +33,7 @@ export function BuyButton({
     });
 
     try {
-      const res = await fetch('/api/kashier/initiate', {
+      const res = await fetch('/api/paymob/initiate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ method }),

@@ -27,13 +27,12 @@ yarn-error.log*
 # بيانات الكوبونات المحلية
 /.data
 
-# الكتاب نفسه — الريبو public، ومايتباعش مجانًا على GitHub.
-# ارفعه على Vercel Blob/Dropbox وحط الرابط في BOOK_FILE_URL بدل ما يتسجّل هنا.
-/book/book.pdf
-
 # typescript
 *.tsbuildinfo
 next-env.d.ts
 
 # نسخ احتياطية محلية
 *.bak
+
+# ملف الكتاب (المنتج) — مايترفعش على GitHub، بيتقدّم من BOOK_FILE_URL
+/book/book.pdf

@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 
 // صفحة الأدمن مش المفروض تتفهرس في محركات البحث.
 export const metadata: Metadata = {
-  title: 'لوحة الكوبونات',
+  title: 'لوحة الأدمن',
   robots: { index: false, follow: false },
 };
 

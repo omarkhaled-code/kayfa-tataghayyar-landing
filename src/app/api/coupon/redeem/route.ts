@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  // خصم جزئي (< 100%) — حاليًا مدعوم كمعلومة فقط؛ ربطه بسعر Kashier خطوة تانية.
+  // خصم جزئي (< 100%) — حاليًا مدعوم كمعلومة فقط؛ ربطه بسعر Paymob خطوة تانية.
   return NextResponse.json({
     ok: true,
     free: false,
